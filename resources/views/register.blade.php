@@ -79,14 +79,9 @@
                                     <label for="distrito" class="form-label">Distrito</label>
                                     <select class="form-select" id="distrito" name="distrito" required>
                                         <option value="">Seleccione el distrito</option>
-                                        <option value="onchagua">Onchagua</option>
-                                        <option value="el_carmen">El Carmen</option>
-                                        <option value="intipuca">Intipucá</option>
-                                        <option value="la_union">La Unión</option>
-                                        <option value="meanguera_del_golfo">Meanguera del Golfo</option>
-                                        <option value="san_alejo">San Alejo</option>
-                                        <option value="yayantique">Yayantique</option>
-                                        <option value="yucuaitin">Yucuaitin</option>
+                                        @foreach($distritos as $distrito)
+                                            <option value="{{ $distrito->id }}">{{ $distrito->nombre }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-6">
@@ -232,14 +227,9 @@
                 <div class="col-md-6">
                   <label for="edit_distrito" class="form-label">Distrito</label>
                   <select class="form-select" id="edit_distrito" name="distrito" required>
-                    <option value="onchagua">Onchagua</option>
-                    <option value="el_carmen">El Carmen</option>
-                    <option value="intipuca">Intipucá</option>
-                    <option value="la_union">La Unión</option>
-                    <option value="meanguera_del_golfo">Meanguera del Golfo</option>
-                    <option value="san_alejo">San Alejo</option>
-                    <option value="yayantique">Yayantique</option>
-                    <option value="yucuaitin">Yucuaitin</option>
+                    @foreach($distritos as $distrito)
+                        <option value="{{ $distrito->id }}">{{ $distrito->nombre }}</option>
+                    @endforeach
                   </select>
                 </div>
                 <div class="col-md-6">

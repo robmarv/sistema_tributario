@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body { background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%); }
-        .dashboard-header { background: #1c1e4d; color: #fff; padding: 2.5rem 0 1.5rem; margin-bottom: 2rem; border-radius: 0 0 32px 32px; }
+        .dashboard-header { background: #1c1e4d; color: #fff; padding: 2.5rem 0; margin-bottom: 2rem; border-radius: 0 0 32px 32px; }
         .dashboard-header h1 { font-size: 2.7rem; font-weight: 700; }
         .dashboard-header p { font-size: 1.15rem; }
         .dashboard-cards { padding-left: 0.5rem; padding-right: 0.5rem; }
@@ -18,7 +18,7 @@
         .table-responsive { padding: 1rem; }
         @media (max-width: 991px) {
             .dashboard-header h1 { font-size: 2rem; }
-            .dashboard-header { padding: 1.5rem 0 1rem; }
+            .dashboard-header { padding: 1.5rem 0; }
         }
     </style>
 </head>
@@ -39,8 +39,18 @@
             <div class="col-12">
                 <h1 class="fw-bold display-5 mb-2">Bienvenido al Sistema Tributario Municipal</h1>
                 <p class="lead">Usuario: <span class="fw-semibold">{{ Auth::user()->name }}</span></p>
-                <p class="mb-1">Municipio: <span class="fw-semibold">{{ Auth::user()->municipio ? ucfirst(str_replace('_', ' ', Auth::user()->municipio)) : 'No registrado' }}</span></p>
-                <p class="mb-4">Distrito: <span class="fw-semibold">{{ Auth::user()->distrito ? ucfirst(str_replace('_', ' ', Auth::user()->distrito)) : 'No registrado' }}</span></p>
+                @php
+                    $distritoNombre = 'No registrado';
+                    if (Auth::user()->distrito) {
+                        $d = \App\Models\Distrito::find(Auth::user()->distrito);
+                        $distritoNombre = $d ? $d->nombre : Auth::user()->distrito;
+                    }
+                @endphp
+                <p class="mb-2">Distrito: <span class="fw-semibold">{{ $distritoNombre }}</span></p>
+                <div class="mt-3">
+                    <h5 id="liveDate" class="fw-normal mb-1"></h5>
+                    <h4 id="liveTime" class="fw-bold"></h4>
+                </div>
             </div>
         </div>
         <div class="row row-cols-1 row-cols-md-4 g-4 dashboard-cards">
@@ -77,6 +87,8 @@
                                 <p class="card-text text-secondary small">{{ $modulo['desc'] }}</p>
                                 @if ($modulo['key'] === 'bitacora')
                                     <a href="{{ route('bitacora.index') }}" class="btn btn-outline-danger btn-sm mt-2">Ver Bitácora</a>
+                                @elseif ($modulo['key'] === 'catastro')
+                                    <a href="{{ url('/catastro') }}" class="btn btn-outline-primary btn-sm mt-2">Ir al módulo</a>
                                 @else
                                     <a href="#" class="btn btn-outline-primary btn-sm mt-2">Ir al módulo</a>
                                 @endif
@@ -88,5 +100,32 @@
             {{-- El bloque Bitácora de Actividades ya está incluido en el array y filtrado por permisos --}}
         </div>
     </div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeElement = document.getElementById('liveTime');
+            const dateElement = document.getElementById('liveDate');
+
+            if (timeElement && dateElement) {
+                // Formato de hora (12-horas con AM/PM)
+                let hours = now.getHours();
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // la hora 0 debe ser 12
+                const strTime = hours.toString().padStart(2, '0') + ':' + minutes + ':' + seconds + ' ' + ampm;
+                timeElement.textContent = strTime;
+
+                // Formato de fecha
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                let dateString = now.toLocaleDateString('es-ES', options);
+                dateElement.textContent = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+            }
+        }
+
+        setInterval(updateTime, 1000);
+        document.addEventListener('DOMContentLoaded', updateTime);
+    </script>
 </body>
 </html>

@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\View;
+use App\Models\Distrito;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,7 +23,14 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
     Route::get('/bitacora', [\App\Http\Controllers\BitacoraController::class, 'index'])->name('bitacora.index');
+    Route::get('/catastro', function () {
+        return view('catastro');
+    })->name('catastro');
 });
 
 Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
 Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+
+View::composer('register', function ($view) {
+    $view->with('distritos', Distrito::where('estado', 1)->get());
+});
