@@ -23,10 +23,14 @@ class User extends Authenticatable
         'password',
         'dui',
         'nit',
+        'municipio',
+        'distrito',
         'fecha_nacimiento',
         'telefono',
         'direccion',
         'tipo_contribuyente',
+        'perfil',
+        'modulos',
     ];
 
     /**

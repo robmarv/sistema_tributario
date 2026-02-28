@@ -194,6 +194,10 @@
                                autocomplete="current-password">
                     </div>
 
+                    <div class="mb-3">
+                        <!-- El campo distrito ha sido removido -->
+                    </div>
+
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg">
                             Iniciar Sesión

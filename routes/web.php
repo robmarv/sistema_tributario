@@ -20,4 +20,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+    Route::get('/bitacora', [\App\Http\Controllers\BitacoraController::class, 'index'])->name('bitacora.index');
 });
+
+Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');

@@ -22,6 +22,14 @@ class AuthController extends Controller
 
         if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
+            \App\Models\Bitacora::create([
+                'usuario_id' => Auth::id(),
+                'accion' => 'login',
+                'modulo' => 'autenticacion',
+                'descripcion' => 'Inicio de sesión',
+                'ip' => $request->ip(),
+                'fecha' => now(),
+            ]);
             return redirect()->intended('/dashboard');
         }
 
@@ -32,9 +40,18 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $usuario_id = Auth::id();
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        \App\Models\Bitacora::create([
+            'usuario_id' => $usuario_id,
+            'accion' => 'logout',
+            'modulo' => 'autenticacion',
+            'descripcion' => 'Cierre de sesión',
+            'ip' => $request->ip(),
+            'fecha' => now(),
+        ]);
+        return redirect()->route('login');
     }
 }
